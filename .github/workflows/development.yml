@@ -2,29 +2,94 @@ name: Development Docker Container
 
 on:
   push:
-    branches: [ master, development ]
+    branches: ["master"] # Trigger on push to master
   pull_request:
-    branches: [ master, development ]
-  workflow_dispatch:
+    branches: ["master"] # Trigger on pull request to master
 
 jobs:
-  deploy:
-    runs-on: [self-hosted]
+  build-test-deploy:
+    runs-on: [self-hosted] # Use your self-hosted GitHub Actions runner
 
     steps:
-      # Step 1: Checkout latest code
-      - name: Checkout Code
-        uses: actions/checkout@v3
+
+
+      # Step 0: Enhanced free up disk space and memory
+      - name: Enhanced system cleanup
+        run: |
+          echo "Before cleanup:"
+          df -h
+          free -h
+          
+          # More aggressive disk cleanup
+          # Remove unused packages and clean apt cache
+          sudo apt-get autoremove -y
+          sudo apt-get clean
+          
+          # Clear system logs
+          sudo journalctl --vacuum-time=1d
+          sudo find /var/log -type f -name "*.gz" -delete
+          sudo find /var/log -type f -name "*.1" -delete
+          sudo find /var/log -type f -name "*.old" -delete
+          
+          # Clean temp directories
+          sudo rm -rf /tmp/* || true
+          sudo rm -rf /var/tmp/* || true
+          
+          # Clean package manager caches
+          sudo apt-get autoclean
+          
+          # Remove old Docker resources
+          docker system prune -af --volumes
+          
+          # Clear swap and page cache
+          sudo swapoff -a && sudo swapon -a
+          sudo sync && echo 3 | sudo tee /proc/sys/vm/drop_caches > /dev/null
+          
+          # Find and report large files (for information)
+          echo "Top 10 largest directories:"
+          sudo du -h --max-depth=2 / 2>/dev/null | sort -hr | head -10
+          
+          echo "After cleanup:"
+          df -h
+          free -h
+          
+          echo "Enhanced system cleanup completed"
+      # Step 1: Stop any running containers to ensure a clean state
+      - name: Clean up Docker resources
+        run: |
+          docker compose down || true
+          echo "Step 1 completed: Docker resources cleaned up"
+
+      # # Step 2: Clean up certbot config if it exists
+      # - name: Clean up certbot if exists
+      #   run: |
+      #         CERTBOT_PATH="${{ github.workspace }}/certbot/conf"
+      #         if [ -d "$CERTBOT_PATH" ]; then
+      #           chmod -R +rwx "${CERTBOT_PATH%/*}" || true
+      #           rm -rf "$CERTBOT_PATH" || true
+      #         fi
+      #         echo "Step 2 completed: Certbot config cleaned up"
+
+      # # Step 3: Create dummy SSL cert for CI
+      # - name: Create dummy SSL cert for explore.nerdstudio.ai
+      #   run: |
+      #         mkdir -p certbot/conf/live/explore.nerdstudio.ai
+      #         openssl req -x509 -nodes -newkey rsa:2048 \
+      #           -days 1 \
+      #           -keyout certbot/conf/live/explore.nerdstudio.ai/privkey.pem \
+      #           -out certbot/conf/live/explore.nerdstudio.ai/fullchain.pem \
+      #           -subj "/CN=localhost"
+      #           echo "Step 3 completed: Dummy SSL cert created"
+
+      # Step 3: Checkout repository into a temporary folder
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           clean: false
+          fetch-depth: 1
+          path: tmp_checkout
 
-      - name: Debug Step 1 - Check Files After Checkout
-        run: |
-          echo "==== Checking files in current directory ===="
-          ls -la
-          echo "==== Git Branch Info ===="
-          git status
-
+          
       # Step 2: Create .env file
       - name: Create .env File From Secrets
         run: |
