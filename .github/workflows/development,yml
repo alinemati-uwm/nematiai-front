@@ -11,7 +11,7 @@ jobs:
   deploy:
     runs-on:
     - self-hosted
-    - development_runner    
+    - front_end_nai_server
     steps:
       - name: Pulling ...
         uses: actions/checkout@v3
