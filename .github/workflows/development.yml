@@ -75,7 +75,7 @@ jobs:
       # Step 2: Create .env file
       - name: Create .env File From Secrets
         run: |
-          echo "Creating .env file ..."
+          cd tmp_checkout
           echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
           echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
           echo "NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}" >> .env
@@ -83,7 +83,7 @@ jobs:
           echo "NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}" >> .env
           echo "NEXT_PUBLIC_API_SUBDOMAIN=${{ secrets.NEXT_PUBLIC_API_SUBDOMAIN_DEVELOPMENT }}" >> .env
           echo "APP_MOBILE_TOKEN=${{ secrets.APP_MOBILE_TOKEN }}" >> .env
-
+    
       - name: Debug Step 2 - Check .env Content
         run: |
           echo "==== .env File Created ===="
