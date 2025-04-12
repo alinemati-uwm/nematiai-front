@@ -11,8 +11,6 @@ jobs:
     runs-on: [self-hosted] # Use your self-hosted GitHub Actions runner
 
     steps:
-
-
       # Step 0: Enhanced free up disk space and memory
       - name: Enhanced system cleanup
         run: |
@@ -54,16 +52,14 @@ jobs:
           free -h
           
           echo "Enhanced system cleanup completed"
+
       # Step 1: Stop any running containers to ensure a clean state
       - name: Clean up Docker resources
         run: |
           docker compose down || true
           echo "Step 1 completed: Docker resources cleaned up"
 
-
-
-
-      # Step 3: Checkout repository into a temporary folder
+      # Step 2: Checkout repository into a temporary folder
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -71,8 +67,7 @@ jobs:
           fetch-depth: 1
           path: tmp_checkout
 
-
-      # Step 2: Create .env file
+      # Step 3: Create .env file
       - name: Create .env File From Secrets
         run: |
           cd tmp_checkout
@@ -84,73 +79,20 @@ jobs:
           echo "NEXT_PUBLIC_API_SUBDOMAIN=${{ secrets.NEXT_PUBLIC_API_SUBDOMAIN_DEVELOPMENT }}" >> .env
           echo "APP_MOBILE_TOKEN=${{ secrets.APP_MOBILE_TOKEN }}" >> .env
     
-      - name: Debug Step 2 - Check .env Content
+      - name: Debug Step - Check .env Content
         run: |
           echo "==== .env File Created ===="
-          cat .env | grep -v SECRET  # Avoid showing secrets in logs!
-
+          cat tmp_checkout/.env | grep -v SECRET  # Avoid showing secrets in logs!
 
       - name: Debug Check Files
         run: |
           echo "Checking files inside tmp_checkout/"
           ls -la tmp_checkout/
 
+      # Step 4: Build and Run Docker Container
       - name: Build and Run Docker Container
+        shell: bash
         run: |
-            run: |
-              docker compose -f tmp_checkout/docker/development/docker-compose.yml build --progress=plain --no-cache
-              docker compose -f tmp_checkout/docker/development/docker-compose.yml up -d
-          
-        
+          docker compose -f tmp_checkout/docker/development/docker-compose.yml build --no-cache
+          docker compose -f tmp_checkout/docker/development/docker-compose.yml up -d
 
-        
-
-      # # Step 4: Debug Running Containers
-      # - name: Debug Step 3 - Show Running Docker Containers
-      #   run: |
-      #     echo "==== Running Containers ===="
-      #     docker ps
-
-      # # Step 5: Debug Logs From Container
-      # - name: Debug Step 4 - Show Last 50 Lines of Logs
-      #   run: |
-      #     echo "==== Last 50 Lines of Logs ===="
-      #     docker compose logs --tail=50
-
-
-
-# name: Development Docker Container
-
-# on:
-#   push:
-#     branches: [ master , development ]
-#   pull_request:
-#     branches: [ master , development ]
-#   workflow_dispatch:
-
-# jobs:
-#   deploy:
-#     runs-on: [self-hosted]
-#     steps:
-#       - name: Pulling ...
-#         uses: actions/checkout@v3
-#         with:
-#           clean: false
-
-#       - name: Create .env file
-#         run: |
-#           echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
-#           echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
-#           echo "NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}" >> .env
-#           echo "NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}" >> .env
-#           echo "NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}" >> .env
-#           echo "NEXT_PUBLIC_API_SUBDOMAIN=${{ secrets.NEXT_PUBLIC_API_SUBDOMAIN_DEVELOPMENT }}" >> .env
-#           echo "APP_MOBILE_TOKEN=${{ secrets.APP_MOBILE_TOKEN }}" >> .env
-          
-
-#       - name: Build and Run Docker container
-#         run: |
-#           docker system prune -f
-#           docker compose -f docker/development/docker-compose.yml build
-#           docker compose -f docker/development/docker-compose.yml up -d
-          
