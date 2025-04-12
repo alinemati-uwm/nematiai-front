@@ -194,20 +194,5 @@ services:
 networks:
   nerd-studio-network:
     driver: bridge
-EOL
-            echo "Created docker-compose.yml file manually as fallback"
-            ls -la "$DOCKER_DIR"
-          fi
-          
-          echo "===== RUNNING DOCKER COMMANDS ====="
-          # Try with different path formats in case there's an issue
-          echo "Attempt 1: Using absolute path..."
-          docker compose -f "$COMPOSE_FILE" build --no-cache || true
-          
-          echo "Attempt 2: Using relative path..."
-          cd "$(pwd)/tmp_checkout/docker/development"
-          docker compose build --no-cache
-          
-          echo "Starting container..."
-          docker compose up -d
+
 
