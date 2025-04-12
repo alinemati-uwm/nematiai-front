@@ -1,0 +1,18 @@
+.markmap-node {
+	@apply select-none;
+}
+
+.markmap-node > .markmap-foreign {
+	/*transform: translate(0px, 14px);*/
+	@apply cursor-default rounded-md border border-transparent transition-all duration-100 hover:border-primary;
+}
+.markmap-node > .markmap-foreign > div {
+	@apply flex h-full select-none items-center;
+}
+.markmap-node > .markmap-foreign > div > div {
+	@apply select-none px-2 py-1 align-middle text-sm;
+}
+
+.markmap-node .active-node {
+	@apply border border-primary;
+}

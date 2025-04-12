@@ -1,0 +1,11 @@
+.selectedenginNoTtitle .holderTitle {
+	width: 20px !important;
+	gap: 0 !important;
+}
+
+.selectedenginNoTtitle .holderTitle .iconTitle {
+	visibility: visible;
+}
+.selectedenginNoTtitle .holderTitle .textTile {
+	display: none;
+}

@@ -1,0 +1,34 @@
+name: Production Docker Container
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, front-end-neamti-ai-aws]
+    steps:
+      - name: Pulling ...
+        uses: actions/checkout@v3
+        with:
+          clean: false
+
+      - name: Create .env file
+        run: |
+          echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
+          echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
+          echo "NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}" >> .env
+          echo "NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}" >> .env
+          echo "NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}" >> .env
+          echo "NEXT_PUBLIC_API_SUBDOMAIN=${{ secrets.NEXT_PUBLIC_API_SUBDOMAIN_PRODUCTION }}" >> .env
+          echo "APP_MOBILE_TOKEN=${{ secrets.APP_MOBILE_TOKEN }}" >> .env
+          
+
+      - name: Build and Run Docker container
+        run: |
+          docker system prune -f
+          docker-compose -f docker/production/docker-compose.yml build
+          docker-compose -f docker/production/docker-compose.yml up -d

@@ -1,0 +1,43 @@
+.borderGradiant {
+	position: relative;
+}
+.rightField:focus-within::after {
+	background: linear-gradient(
+			to right,
+			hsl(var(--orange)),
+			#cd7e43,
+			#d1844b,
+			#a2541a,
+			hsl(var(--orange-light))
+		)
+		border-box;
+}
+
+.leftField:focus-within::after {
+	background: linear-gradient(
+			to left,
+			hsl(var(--orange)),
+			#cd7e43,
+			#d1844b,
+			#a2541a,
+			hsl(var(--orange-light))
+		)
+		border-box;
+}
+
+.borderGradiant:focus-within::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	border: 2px solid transparent;
+	border-radius: 0.5rem;
+	-webkit-mask:
+		linear-gradient(#fff 0 0) padding-box,
+		linear-gradient(#fff 0 0);
+	-webkit-mask-composite: destination-out;
+	mask-composite: exclude;
+	z-index: -1;
+}

@@ -1,0 +1,46 @@
+.animate {
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	animation: effect 2.7s 0.4s both;
+	top: 0;
+	bottom: 0;
+	right: 0;
+}
+
+@keyframes effect {
+	0% {
+	}
+	100% {
+		width: 0;
+	}
+}
+
+.borderGradiant {
+	position: relative;
+}
+
+.borderGradiant::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: linear-gradient(
+			to right,
+			hsl(var(--success-light)),
+			hsl(var(--success)),
+			#41ad7f,
+			hsl(var(--success-dark))
+		)
+		border-box;
+	border: 2px solid transparent;
+	border-radius: 0.5rem;
+	-webkit-mask:
+		linear-gradient(#fff 0 0) padding-box,
+		linear-gradient(#fff 0 0);
+	-webkit-mask-composite: destination-out;
+	mask-composite: exclude;
+	z-index: -1;
+}

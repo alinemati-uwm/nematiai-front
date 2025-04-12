@@ -1,0 +1,42 @@
+.markdown {
+	font-size: 0.8rem;
+}
+
+.markdown ul {
+	margin-bottom: 6px;
+}
+
+.markdown li {
+	font-size: 0.8rem;
+}
+
+.markdown h1 {
+	font-size: 1.4rem;
+	font-weight: bold;
+	margin-bottom: 16px;
+}
+
+.markdown h2 {
+	font-size: 1.2rem;
+	font-weight: bold;
+	margin-bottom: 6px;
+}
+
+.markdown h3 {
+	font-size: 1rem;
+	font-weight: bold;
+	margin-bottom: 6px;
+}
+
+.markdown p {
+	margin-bottom: 10px;
+}
+
+.markdown hr {
+	margin: 20px 0;
+	border-top-color: #333;
+}
+
+.markdown a {
+	color: #e0bfff;
+}

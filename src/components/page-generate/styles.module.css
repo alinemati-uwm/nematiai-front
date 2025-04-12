@@ -1,0 +1,17 @@
+.animate {
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	animation: effect 2.7s 0.4s both;
+	top: 0;
+	bottom: 0;
+	right: 0;
+}
+
+@keyframes effect {
+	0% {
+	}
+	100% {
+		width: 0;
+	}
+}

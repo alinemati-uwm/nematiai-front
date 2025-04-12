@@ -1,0 +1,26 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.nerdstudio.app",
+      "sha256_cert_fingerprints": [
+        "DF:36:13:73:E3:A4:A9:95:98:D8:07:5E:90:B4:38:BF:0F:E7:8B:EF:3D:B9:28:BB:94:AB:A1:2F:3F:62:56:CE"
+      ]
+    }
+  },
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.nerdstudio.app",
+      "sha256_cert_fingerprints": [
+        "B0:19:02:DC:F3:22:4A:9A:90:D2:72:89:1B:36:26:AE:C6:79:27:10:25:25:1C:57:5E:B8:C2:64:D7:3E:09:7D"
+      ]
+    }
+  }
+]

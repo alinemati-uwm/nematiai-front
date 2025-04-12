@@ -1,0 +1,45 @@
+.markdown {
+	font-size: 0.8rem;
+}
+
+.markdown ul {
+	margin-bottom: 6px;
+}
+
+.markdown li {
+	font-size: 0.8rem;
+}
+
+.markdown h1 {
+	font-size: 1.1rem;
+	font-weight: bold;
+	margin-bottom: 6px;
+}
+
+.markdown h2 {
+	font-size: 1rem;
+	font-weight: bold;
+	margin-bottom: 6px;
+}
+
+.markdown h3 {
+	font-size: 0.9rem;
+	font-weight: bold;
+	margin-bottom: 6px;
+}
+
+.markdown p {
+	margin-bottom: 10px;
+}
+
+.markdown hr {
+	margin-bottom: 10px;
+}
+
+.markdown a {
+	color: hsl(var(--primary-dark));
+	font-weight: bold;
+}
+.markdown.dark a {
+	color: hsl(var(--primary-light));
+}

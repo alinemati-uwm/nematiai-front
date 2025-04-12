@@ -1,0 +1,23 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "MFGJ44VM88.com.nerdstudio.nerdstudAI",
+        "paths": [
+          "*"
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": [
+      "MFGJ44VM88.com.nerdstudio.nerdstudAI"
+    ]
+  },
+  "appclips": {
+    "apps": [
+      "MFGJ44VM88.com.nerdstudio.nerdstudAI"
+    ]
+  }
+}

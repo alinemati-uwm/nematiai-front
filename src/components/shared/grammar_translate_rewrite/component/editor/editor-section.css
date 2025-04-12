@@ -1,0 +1,11 @@
+.editorWrapper {
+	height: fit-content;
+	overflow: hidden;
+}
+
+@media (min-width: 1024px) {
+	.editorWrapper {
+		/*138px is total height of editorFooter and editorHeader section that */
+		height: calc(100% - 150px);
+	}
+}

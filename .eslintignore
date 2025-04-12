@@ -1,0 +1,12 @@
+**/node_modules/*
+**/out/*
+**/.next/*
+**/tsconfig.json
+**/next.config.js
+**/package.json
+**/package-lock.json
+**/.eslintrc.json
+**/public
+**/styles
+server.js
+.eslintcache

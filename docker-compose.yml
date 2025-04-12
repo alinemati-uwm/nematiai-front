@@ -1,0 +1,38 @@
+version: "3"
+
+services:
+  nerd-studio:
+    build:
+      context: .
+      dockerfile: docker/${DOCKER_ENV:-development}/Dockerfile
+      args:
+        - NODE_ENV=${NODE_ENV:-development}
+    image: nerd-studio-${NODE_ENV:-development}
+    container_name: nerd-studio-${NODE_ENV:-development}
+    ports:
+      - "${PORT:-3000}:3000"
+    env_file:
+      - ${ENV_FILE:-.env}
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    # Uncomment for persistent storage if needed
+    # volumes:
+    #   - ./data:/app/data
+    networks:
+      - nerd-studio-network
+
+networks:
+  nerd-studio-network:
+    driver: bridge

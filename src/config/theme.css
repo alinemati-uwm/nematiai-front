@@ -1,0 +1,195 @@
+.primary-blue {
+	--primary-light: 226 76% 94%;
+	--primary-lighter: 226 76% 96%; /* افزوده شده */
+	--primary: 226 76% 64%;
+	--primary-dark: 226 76% 49%;
+	--active-bg: #5d7ee920;
+}
+
+.primary-azure {
+	--primary-light: 225 85% 95%;
+	--primary-lighter: 225 85% 97%; /* افزوده شده */
+	--primary: 225 85% 65%;
+	--primary-dark: 225 85% 50%;
+	--active-bg: #5a80f220;
+}
+
+.primary-brown {
+	--primary-light: 34 28% 90%;
+	--primary-lighter: 34 28% 92%;
+	--primary: 34 28% 47%;
+	--primary-dark: 34 28% 32%;
+	--active-bg: #997c5620;
+}
+
+.primary-skyblue {
+	--primary-light: 191 100% 95%;
+	--primary-lighter: 191 100% 97%;
+	--primary: 191 100% 47%;
+	--primary-dark: 191 100% 32%;
+	--active-bg: #00c4f020;
+}
+
+.primary-green {
+	--primary-light: 164 98% 95%;
+	--primary-lighter: 164 98% 97%;
+	--primary: 164 98% 31%;
+	--primary-dark: 164 98% 16%;
+	--active-bg: #029d7320;
+}
+
+.primary-orange {
+	--primary-light: 31 96% 93%;
+	--primary-lighter: 31 96% 95%;
+	--primary: 31 96% 53%;
+	--primary-dark: 31 96% 45%;
+	--active-bg: #fa8b1420;
+}
+
+.primary-pink {
+	--primary-light: 333 73% 95%;
+	--primary-lighter: 333 73% 97%;
+	--primary: 333 73% 67%;
+	--primary-dark: 333 73% 52%;
+	--active-bg: #e86da520;
+}
+
+.primary-cerise {
+	--primary-light: 355 97% 95%;
+	--primary-lighter: 355 97% 97%;
+	--primary: 355 97% 70%;
+	--primary-dark: 355 97% 60%;
+	--active-bg: #fd687520;
+}
+
+.primary-desert-sand {
+	--primary-light: 35 10% 87%;
+	--primary-lighter: 35 10% 89%;
+	--primary: 35 10% 51%;
+	--primary-dark: 35 10% 36%;
+	--active-bg: #8f847620;
+}
+
+.theme-dark {
+	--background: 234 17% 12%;
+	--foreground: 208 14% 79%;
+	--bg-overlay: #00000064;
+	--bg-main: 234 17% 15%;
+
+	--card: 234 17% 12%;
+	--card-foreground: 208 14% 79%;
+
+	--toast-success: 229 17% 18%;
+	--toast-error: 229 17% 18%;
+
+	--popover: 229 17% 18%;
+	--popover-foreground: 208 14% 79%;
+
+	--acc-setting: 229 17% 18%;
+	--acc-setting-foreground: 229 17% 28%;
+
+	--primary-lighter: 229 17% 28%;
+
+	--muted: #f8f8f8;
+	--muted-dark: 229 17% 18%;
+	--muted-foreground: 212 7% 52%;
+	--muted-foreground-light: 212 7% 60%;
+
+	--border: 236 15% 18%;
+	--input: 236 15% 18%;
+	--ring: 236 15% 18%;
+	--hover: #ffffff10;
+}
+
+.theme-grey-dark {
+	--background: 0 0% 14%;
+	--foreground: 0 0% 79%;
+	--bg-overlay: #00000064;
+	--bg-main: 0 0% 17%;
+
+	--card: 0 0% 14%;
+	--card-foreground: 0 0% 79%;
+
+	--toast-success: 0 0% 21%;
+	--toast-error: 0 0% 21%;
+
+	--popover: 0 0% 21%;
+	--popover-foreground: 0 0% 79%;
+
+	--acc-setting: 0 0% 18%;
+	--acc-setting-foreground: 0 0% 21%;
+
+	--primary-lighter: 0 0% 21%;
+
+	--muted: 0 0% 21%;
+	--muted-dark: 0 0% 18%;
+	--muted-foreground: 0 0% 53%;
+	--muted-foreground-light: 0 0% 60%;
+
+	--border: 0 0% 21%;
+	--input: 0 0% 21%;
+	--ring: 0 0% 21%;
+	--hover: #ffffff10;
+}
+
+.theme-blue-dark {
+	--background: 215 15% 16%;
+	--foreground: 0 0% 79%;
+	--bg-overlay: #00000064;
+	--bg-main: 215 15% 18%;
+
+	--card: 215 15% 16%;
+	--card-foreground: 0 0% 79%;
+
+	--toast-success: 214 16% 20%;
+	--toast-error: 214 16% 20%;
+
+	--popover: 214 16% 20%;
+	--popover-foreground: 0 0% 79%;
+
+	--acc-setting: 218 10% 20%;
+	--acc-setting-foreground: 214 16% 25%;
+
+	--primary-lighter: 214 16% 25%;
+
+	--muted: 218 10% 23%;
+	--muted-dark: 218 10% 20%;
+	--muted-foreground: 220 3% 54%;
+	--muted-foreground-light: 220 3% 60%;
+
+	--border: 214 16% 20%;
+	--input: 214 16% 20%;
+	--ring: 214 16% 20%;
+	--hover: #ffffff10;
+}
+
+.theme-brown-light {
+	--background: 43 60% 94%;
+	--foreground: 220 43% 11%;
+	--bg-overlay: #ffffff64;
+	--bg-main: 43 60% 93%;
+
+	--card: 43 60% 94%;
+	--card-foreground: 220 43% 11%;
+
+	--toast-success: 43 45% 92%;
+	--toast-error: 43 45% 92%;
+
+	--popover: 43 45% 92%;
+	--popover-foreground: 220 43% 11%;
+
+	--acc-setting: 43 22% 82%;
+	--acc-setting-foreground: 43 45% 92%;
+
+	--primary-lighter: 43 45% 92%;
+
+	--muted: 43 22% 87%;
+	--muted-dark: 43 22% 82%;
+	--muted-foreground: 216 2% 47%;
+	--muted-foreground-light: 216 2% 60%;
+
+	--border: 41 24% 87%;
+	--input: 41 24% 87%;
+	--ring: 41 24% 87%;
+	--hover: #00000010;
+}
