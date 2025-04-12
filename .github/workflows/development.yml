@@ -71,16 +71,8 @@ jobs:
               fi
               echo "Step 2 completed: Certbot config cleaned up"
 
-      # Step 3: Create dummy SSL cert for CI
-      - name: Create dummy SSL cert for explore.nerdstudio.ai
-        run: |
-              mkdir -p certbot/conf/live/explore.nerdstudio.ai
-              openssl req -x509 -nodes -newkey rsa:2048 \
-                -days 1 \
-                -keyout certbot/conf/live/explore.nerdstudio.ai/privkey.pem \
-                -out certbot/conf/live/explore.nerdstudio.ai/fullchain.pem \
-                -subj "/CN=localhost"
-                echo "Step 3 completed: Dummy SSL cert created"
+
+
 
       # Step 3: Checkout repository into a temporary folder
       - name: Checkout repository
