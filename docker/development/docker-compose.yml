@@ -1,10 +1,38 @@
-version: "3"
+version: '3.8'
+
+name: nematiai-development
 
 services:
-  nerd-studio-development:
+  frontend:
     build:
-      context: ../../
-      dockerfile: docker/development/Dockerfile
-    image: nerd-studio-development
+      context: ../../         # Point to the root directory of your project
+      dockerfile: docker/development/Dockerfile  # Path to Dockerfile relative to the context
+      args:
+        - NODE_ENV=${NODE_ENV:-development}
+        - COMMIT_SHA=${GITHUB_SHA:-local}       # For version tracking in CI
+        - BUILD_ID=${GITHUB_RUN_ID:-local}      # For CI/CD build identification
+    container_name: nematiai-frontend-dev
     ports:
-      - "80:3000"
+      - "3000:3000"
+    env_file:
+      - ../../.env            # Use the .env file from project root
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - NEXTAUTH_URL=${NEXTAUTH_URL}
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+      - NEXT_PUBLIC_API_SUBDOMAIN=${NEXT_PUBLIC_API_SUBDOMAIN}
+      - APP_MOBILE_TOKEN=${APP_MOBILE_TOKEN}
+    volumes:
+      - ../../:/app           # Mount the root directory to the container
+      - /app/node_modules     # Preserve node_modules in the container
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

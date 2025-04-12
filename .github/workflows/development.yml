@@ -60,37 +60,27 @@ jobs:
           docker compose down || true
           echo "Step 1 completed: Docker resources cleaned up"
 
-      - name: Docker System Prune
-        run: |
-            echo "==== Docker System Prune ===="
-            docker system prune -f
-            
-            echo "==== Building Docker Image ===="
-            docker compose -f ./docker-compose.yml build
-            
-            echo "==== Running Docker Container ===="
-            docker compose -f ./docker-compose.yml up -d
         
-      # # Step 2: Clean up certbot config if it exists
-      # - name: Clean up certbot if exists
-      #   run: |
-      #         CERTBOT_PATH="${{ github.workspace }}/certbot/conf"
-      #         if [ -d "$CERTBOT_PATH" ]; then
-      #           chmod -R +rwx "${CERTBOT_PATH%/*}" || true
-      #           rm -rf "$CERTBOT_PATH" || true
-      #         fi
-      #         echo "Step 2 completed: Certbot config cleaned up"
+      # Step 2: Clean up certbot config if it exists
+      - name: Clean up certbot if exists
+        run: |
+              CERTBOT_PATH="${{ github.workspace }}/certbot/conf"
+              if [ -d "$CERTBOT_PATH" ]; then
+                chmod -R +rwx "${CERTBOT_PATH%/*}" || true
+                rm -rf "$CERTBOT_PATH" || true
+              fi
+              echo "Step 2 completed: Certbot config cleaned up"
 
-      # # Step 3: Create dummy SSL cert for CI
-      # - name: Create dummy SSL cert for explore.nerdstudio.ai
-      #   run: |
-      #         mkdir -p certbot/conf/live/explore.nerdstudio.ai
-      #         openssl req -x509 -nodes -newkey rsa:2048 \
-      #           -days 1 \
-      #           -keyout certbot/conf/live/explore.nerdstudio.ai/privkey.pem \
-      #           -out certbot/conf/live/explore.nerdstudio.ai/fullchain.pem \
-      #           -subj "/CN=localhost"
-      #           echo "Step 3 completed: Dummy SSL cert created"
+      # Step 3: Create dummy SSL cert for CI
+      - name: Create dummy SSL cert for explore.nerdstudio.ai
+        run: |
+              mkdir -p certbot/conf/live/explore.nerdstudio.ai
+              openssl req -x509 -nodes -newkey rsa:2048 \
+                -days 1 \
+                -keyout certbot/conf/live/explore.nerdstudio.ai/privkey.pem \
+                -out certbot/conf/live/explore.nerdstudio.ai/fullchain.pem \
+                -subj "/CN=localhost"
+                echo "Step 3 completed: Dummy SSL cert created"
 
       # Step 3: Checkout repository into a temporary folder
       - name: Checkout repository
