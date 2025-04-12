@@ -9,9 +9,7 @@ on:
 
 jobs:
   deploy:
-    runs-on:
-    - self-hosted
-    - front_end_nai_server
+    runs-on: [self-hosted, front_end_nai_server]
     steps:
       - name: Pulling ...
         uses: actions/checkout@v3
