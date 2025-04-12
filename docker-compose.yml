@@ -36,3 +36,7 @@ services:
 networks:
   nerd-studio-network:
     driver: bridge
+
+
+# Uncomment for persistent storage if needed
+# volumes: docker compose up -d --force-recreate --build
