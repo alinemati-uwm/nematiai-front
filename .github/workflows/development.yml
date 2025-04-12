@@ -2,9 +2,9 @@ name: Development Docker Container
 
 on:
   push:
-    branches: [ development ]
+    branches: [ master , development ]
   pull_request:
-    branches: [ development ]
+    branches: [ master , development ]
   workflow_dispatch:
 
 jobs:
