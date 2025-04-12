@@ -1,5 +1,5 @@
 # Specify the Docker Compose version (syntax version)
-version: "3"
+version: "3.8"  # Use version 3.8 of Docker Compose
 
 services:
   # Define a service called 'nerd-studio'
