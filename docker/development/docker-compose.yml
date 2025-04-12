@@ -1,5 +1,3 @@
-# Specify the Docker Compose version (syntax version)
-version: "3.8"  # Use version 3.8 of Docker Compose
 
 services:
   # Define a service called 'nerd-studio'
@@ -7,7 +5,7 @@ services:
   
     # Build the image from a Dockerfile
     build:
-      context: .  # The build context (current directory)
+      context: ../../  # The build context (current directory)
       dockerfile: docker/${DOCKER_ENV:-development}/Dockerfile  # Select Dockerfile based on env var DOCKER_ENV (default: development)
       args:
         - NODE_ENV=${NODE_ENV:-development}  # Pass build ARG to Dockerfile (environment for Node.js)

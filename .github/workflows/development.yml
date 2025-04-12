@@ -92,29 +92,23 @@ jobs:
       # Step 3: Docker Build & Run
       - name: Build and Run Docker Container
         run: |
-          cd tmp_checkout
-      
-          echo "==== Docker System Prune ===="
-          docker system prune -f
-      
-          echo "==== Building Docker Image ===="
+        cd tmp_checkout
           docker compose -f docker/development/docker-compose.yml build
-      
-          echo "==== Running Docker Container ===="
           docker compose -f docker/development/docker-compose.yml up -d
       
+      
 
-      # Step 4: Debug Running Containers
-      - name: Debug Step 3 - Show Running Docker Containers
-        run: |
-          echo "==== Running Containers ===="
-          docker ps
+      # # Step 4: Debug Running Containers
+      # - name: Debug Step 3 - Show Running Docker Containers
+      #   run: |
+      #     echo "==== Running Containers ===="
+      #     docker ps
 
-      # Step 5: Debug Logs From Container
-      - name: Debug Step 4 - Show Last 50 Lines of Logs
-        run: |
-          echo "==== Last 50 Lines of Logs ===="
-          docker compose logs --tail=50
+      # # Step 5: Debug Logs From Container
+      # - name: Debug Step 4 - Show Last 50 Lines of Logs
+      #   run: |
+      #     echo "==== Last 50 Lines of Logs ===="
+      #     docker compose logs --tail=50
 
 
 
