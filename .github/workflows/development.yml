@@ -88,15 +88,23 @@ jobs:
         run: |
           echo "==== .env File Created ===="
           cat .env | grep -v SECRET  # Avoid showing secrets in logs!
-
-      # Step 3: Docker Build & Run
+      - name: Copy Needed Files
+        run: |
+            cp package.json tmp_checkout/package.json
+            cp yarn.lock tmp_checkout/yarn.lock || true
+            cp package-lock.json tmp_checkout/package-lock.json || true
+        
+      # Step 3: Docker Build & Run      
       - name: Build and Run Docker Container
         run: |
-          cd tmp_checkout
-          docker compose -f docker/production/docker-compose.yml build --progress=plain --no-cache
-          docker compose -f docker/production/docker-compose.yml up -d
-      
-      
+            cd tmp_checkout
+        
+            echo "==== Docker Build Context Check ===="
+            ls -la
+        
+            docker compose -f docker/production/docker-compose.yml build --progress=plain --no-cache
+            docker compose -f docker/production/docker-compose.yml up -d
+        
 
       # # Step 4: Debug Running Containers
       # - name: Debug Step 3 - Show Running Docker Containers
