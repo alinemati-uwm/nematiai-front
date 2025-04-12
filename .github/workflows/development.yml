@@ -153,11 +153,23 @@ jobs:
           else
             echo "ERROR: docker-compose.yml NOT FOUND at $COMPOSE_FILE"
             echo "Attempting to find any docker-compose.yml file:"
-            find "$(pwd)" -name "docker-compose.yml" -type f
+            FOUND_FILES=$(find "$(pwd)" -name "docker-compose.yml" -type f)
+            if [ -n "$FOUND_FILES" ]; then
+              echo "Found these docker-compose.yml files:"
+              echo "$FOUND_FILES"
+              # Use the first found file as fallback
+              FIRST_FOUND=$(echo "$FOUND_FILES" | head -n 1)
+              echo "Will use this as fallback: $FIRST_FOUND"
+              COMPOSE_FILE="$FIRST_FOUND"
+              DOCKER_DIR=$(dirname "$FIRST_FOUND")
+            fi
           fi
           
           echo "===== COPYING COMPOSE FILE (FALLBACK) ====="
-          if [ ! -f "$COMPOSE_FILE" ] && [ -d "$DOCKER_DIR" ]; then
+          if [ ! -f "$COMPOSE_FILE" ]; then
+            # Create the directory if it doesn't exist
+            mkdir -p "$DOCKER_DIR"
+            
             echo "Attempting to create docker-compose.yml from local content..."
             cat > "$COMPOSE_FILE" << 'EOL'
 services:
@@ -191,8 +203,7 @@ services:
         max-file: "3"
     networks:
       - nerd-studio-network
-networks:
-  nerd-studio-network:
-    driver: bridge
-
+    networks:
+      nerd-studio-network:
+        driver: bridge
 
