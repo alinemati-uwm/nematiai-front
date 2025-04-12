@@ -2,9 +2,9 @@ name: Development Docker Container
 
 on:
   push:
-    branches: ["master"] # Trigger on push to master
+    branches: ["development"] # Trigger on push to master
   pull_request:
-    branches: ["master"] # Trigger on pull request to master
+    branches: ["development"] # Trigger on pull request to master
 
 jobs:
   build-test-deploy:
@@ -89,7 +89,7 @@ jobs:
           fetch-depth: 1
           path: tmp_checkout
 
-          
+
       # Step 2: Create .env file
       - name: Create .env File From Secrets
         run: |
