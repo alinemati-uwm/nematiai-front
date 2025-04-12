@@ -60,6 +60,17 @@ jobs:
           docker compose down || true
           echo "Step 1 completed: Docker resources cleaned up"
 
+      - name: Docker System Prune
+        run: |
+            echo "==== Docker System Prune ===="
+            docker system prune -f
+            
+            echo "==== Building Docker Image ===="
+            docker compose -f ./docker-compose.yml build
+            
+            echo "==== Running Docker Container ===="
+            docker compose -f ./docker-compose.yml up -d
+        
       # # Step 2: Clean up certbot config if it exists
       # - name: Clean up certbot if exists
       #   run: |
