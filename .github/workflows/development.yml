@@ -2,13 +2,13 @@ name: Development Docker Container
 
 on:
   push:
-    branches: ["development"] # Trigger on push to master
+    branches: ["development"] 
   pull_request:
-    branches: ["development"] # Trigger on pull request to master
+    branches: ["development"] 
 
 jobs:
   build-test-deploy:
-    runs-on: [self-hosted] # Use your self-hosted GitHub Actions runner
+    runs-on: [self-hosted]
 
     steps:
       # Step 0: Enhanced free up disk space and memory
@@ -19,7 +19,6 @@ jobs:
           free -h
           
           # More aggressive disk cleanup
-          # Remove unused packages and clean apt cache
           sudo apt-get autoremove -y
           sudo apt-get clean
           
@@ -43,7 +42,7 @@ jobs:
           sudo swapoff -a && sudo swapon -a
           sudo sync && echo 3 | sudo tee /proc/sys/vm/drop_caches > /dev/null
           
-          # Find and report large files (for information)
+          # Find and report large files
           echo "Top 10 largest directories:"
           sudo du -h --max-depth=2 / 2>/dev/null | sort -hr | head -10
           
@@ -67,32 +66,57 @@ jobs:
           fetch-depth: 1
           path: tmp_checkout
 
-      # Step 3: Create .env file
+      # Step 3: Check the directory structure for debugging
+      - name: Debug - Check Directory Structure
+        run: |
+          echo "Current working directory: $(pwd)"
+          echo "Listing repository root:"
+          ls -la
+          echo "Listing tmp_checkout directory:"
+          ls -la tmp_checkout/
+          echo "Checking docker directory:"
+          ls -la tmp_checkout/docker/ || echo "Docker directory not found!"
+          echo "Checking development directory:"
+          ls -la tmp_checkout/docker/development/ || echo "Development directory not found!"
+          echo "Checking for compose file:"
+          [ -f tmp_checkout/docker/development/docker-compose.yml ] && echo "docker-compose.yml exists!" || echo "docker-compose.yml NOT FOUND!"
+
+      # Step 4: Create .env file
       - name: Create .env File From Secrets
         run: |
           cd tmp_checkout
-          echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
+          echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" > .env
           echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
           echo "NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}" >> .env
           echo "NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}" >> .env
           echo "NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}" >> .env
           echo "NEXT_PUBLIC_API_SUBDOMAIN=${{ secrets.NEXT_PUBLIC_API_SUBDOMAIN_DEVELOPMENT }}" >> .env
           echo "APP_MOBILE_TOKEN=${{ secrets.APP_MOBILE_TOKEN }}" >> .env
+          cd ..
     
-      - name: Debug Step - Check .env Content
+      - name: Debug - Check .env Content
         run: |
           echo "==== .env File Created ===="
           cat tmp_checkout/.env | grep -v SECRET  # Avoid showing secrets in logs!
 
-      - name: Debug Check Files
-        run: |
-          echo "Checking files inside tmp_checkout/"
-          ls -la tmp_checkout/
-
-      # Step 4: Build and Run Docker Container
+      # Step 5: Build and Run Docker Container with improved path handling
       - name: Build and Run Docker Container
-        shell: bash
         run: |
-          docker compose -f tmp_checkout/docker/development/docker-compose.yml build --no-cache
-          docker compose -f tmp_checkout/docker/development/docker-compose.yml up -d
+          COMPOSE_FILE="$(pwd)/tmp_checkout/docker/development/docker-compose.yml"
+          echo "Using docker-compose file at: $COMPOSE_FILE"
+          
+          # Check if file exists
+          if [ ! -f "$COMPOSE_FILE" ]; then
+            echo "ERROR: docker-compose.yml file not found at $COMPOSE_FILE"
+            echo "Directory content:"
+            ls -la "$(pwd)/tmp_checkout/docker/development/" || echo "Directory doesn't exist"
+            exit 1
+          fi
+          
+          # Build and start container using absolute path
+          echo "Building Docker container..."
+          docker compose -f "$COMPOSE_FILE" build --no-cache
+          
+          echo "Starting Docker container..."
+          docker compose -f "$COMPOSE_FILE" up -d
 
