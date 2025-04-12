@@ -96,10 +96,10 @@ jobs:
           docker system prune -f
 
           echo "==== Building Docker Image ===="
-          docker compose -f docker/development/docker-compose.yml build
+          docker compose -f ./docker-compose.yml build
 
           echo "==== Running Docker Container ===="
-          docker compose -f docker/development/docker-compose.yml up -d
+          docker compose -f ./docker-compose.yml up -d
 
       # Step 4: Debug Running Containers
       - name: Debug Step 3 - Show Running Docker Containers
