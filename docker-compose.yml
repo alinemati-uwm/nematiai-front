@@ -1,42 +1,67 @@
+# Specify the Docker Compose version (syntax version)
 version: "3"
 
 services:
+  # Define a service called 'nerd-studio'
   nerd-studio:
+  
+    # Build the image from a Dockerfile
     build:
-      context: .
-      dockerfile: docker/${DOCKER_ENV:-development}/Dockerfile
+      context: .  # The build context (current directory)
+      dockerfile: docker/${DOCKER_ENV:-development}/Dockerfile  # Select Dockerfile based on env var DOCKER_ENV (default: development)
       args:
-        - NODE_ENV=${NODE_ENV:-development}
-    image: nerd-studio-${NODE_ENV:-development}
+        - NODE_ENV=${NODE_ENV:-development}  # Pass build ARG to Dockerfile (environment for Node.js)
+
+    # Name of the image to be created
+    image: nerd-studio-${NODE_ENV:-development}  # Image name based on NODE_ENV (for example: nerd-studio-development)
+
+    # Name of the running container (for easier docker ps/docker stop)
     container_name: nerd-studio-${NODE_ENV:-development}
+
+    # Port mapping: Expose port 3000 from the container to host machine
     ports:
-      - "${PORT:-3000}:3000"
+      - "${PORT:-3000}:3000"  # Host:${PORT} => Container:3000 (default host port 3000)
+
+    # Load environment variables from a file
     env_file:
-      - ${ENV_FILE:-.env}
+      - ${ENV_FILE:-.env}  # Load .env file (or ENV_FILE if specified)
+
+    # Environment variables to inject directly
     environment:
-      - NODE_ENV=${NODE_ENV:-development}
-    restart: unless-stopped
+      - NODE_ENV=${NODE_ENV:-development}  # Define NODE_ENV inside container
+
+    # Automatically restart container if it crashes/stops (unless manually stopped)
+    restart: unless-stopped  
+
+    # Health check config to monitor if container is healthy
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:3000"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000"]  # Test if the app returns HTTP response
+      interval: 30s     # Run healthcheck every 30 seconds
+      timeout: 10s      # Timeout after 10 seconds
+      retries: 3        # Consider unhealthy after 3 failed checks
+      start_period: 10s # Give 10 seconds grace after container starts before health check begins
+
+    # Logging configuration
     logging:
-      driver: "json-file"
+      driver: "json-file"  # Store logs as JSON (default driver)
       options:
-        max-size: "10m"
-        max-file: "3"
-    # Uncomment for persistent storage if needed
+        max-size: "10m"    # Max log file size before rotation
+        max-file: "3"      # Keep 3 rotated log files
+
+    # Optional persistent data storage (disabled here)
     # volumes:
-    #   - ./data:/app/data
+    #   - ./data:/app/data  # Maps ./data on host to /app/data in container
+
+    # Attach this service to a custom network
     networks:
       - nerd-studio-network
 
+# Define the custom network
 networks:
   nerd-studio-network:
-    driver: bridge
+    driver: bridge  # Use the default bridge network (isolated container network)
 
-
-# Uncomment for persistent storage if needed
-# volumes: docker compose up -d --force-recreate --build
+# Note:
+# volumes: section is commented — if you need persistent storage (data survives even after container removal)
+# to rebuild the container:
+# docker compose up -d --force-recreate --build
