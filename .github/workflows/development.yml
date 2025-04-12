@@ -66,20 +66,61 @@ jobs:
           fetch-depth: 1
           path: tmp_checkout
 
-      # Step 3: Check the directory structure for debugging
-      - name: Debug - Check Directory Structure
+      # Step 3: Advanced debugging to identify path and file issues
+      - name: Advanced Debug - Environment & Files
         run: |
-          echo "Current working directory: $(pwd)"
-          echo "Listing repository root:"
+          echo "===== SYSTEM INFORMATION ====="
+          uname -a
+          echo "GitHub Runner OS: $RUNNER_OS"
+          echo "GitHub Workspace: $GITHUB_WORKSPACE"
+          
+          echo "===== ENVIRONMENT VARIABLES ====="
+          env | sort
+          
+          echo "===== CURRENT DIRECTORY ====="
+          pwd
+          
+          echo "===== FILE SYSTEM ENCODING ====="
+          locale
+          echo "LC_ALL: $LC_ALL"
+          echo "LANG: $LANG"
+          
+          echo "===== DIRECTORY STRUCTURE ====="
+          echo "Root directory:"
           ls -la
-          echo "Listing tmp_checkout directory:"
-          ls -la tmp_checkout/
-          echo "Checking docker directory:"
-          ls -la tmp_checkout/docker/ || echo "Docker directory not found!"
-          echo "Checking development directory:"
-          ls -la tmp_checkout/docker/development/ || echo "Development directory not found!"
-          echo "Checking for compose file:"
-          [ -f tmp_checkout/docker/development/docker-compose.yml ] && echo "docker-compose.yml exists!" || echo "docker-compose.yml NOT FOUND!"
+          
+          echo "===== TMP_CHECKOUT DIRECTORY ====="
+          if [ -d "tmp_checkout" ]; then
+            ls -la tmp_checkout/
+          else
+            echo "ERROR: tmp_checkout directory does not exist!"
+          fi
+          
+          echo "===== DOCKER DIRECTORY ====="
+          if [ -d "tmp_checkout/docker" ]; then
+            ls -la tmp_checkout/docker/
+          else
+            echo "ERROR: tmp_checkout/docker directory does not exist!"
+          fi
+          
+          echo "===== DEVELOPMENT DIRECTORY ====="
+          if [ -d "tmp_checkout/docker/development" ]; then
+            ls -la tmp_checkout/docker/development/
+          else
+            echo "ERROR: tmp_checkout/docker/development directory does not exist!"
+          fi
+          
+          echo "===== FILE CONTENT CHECK ====="
+          if [ -f "tmp_checkout/docker/development/docker-compose.yml" ]; then
+            echo "docker-compose.yml exists, showing first 10 lines:"
+            head -n 10 tmp_checkout/docker/development/docker-compose.yml
+          else
+            echo "ERROR: docker-compose.yml does not exist!"
+          fi
+          
+          echo "===== ALTERNATIVE PATH CHECK ====="
+          echo "Checking if the file exists in weird path formats:"
+          find . -name "docker-compose.yml" -type f | grep -i docker
 
       # Step 4: Create .env file
       - name: Create .env File From Secrets
@@ -99,24 +140,74 @@ jobs:
           echo "==== .env File Created ===="
           cat tmp_checkout/.env | grep -v SECRET  # Avoid showing secrets in logs!
 
-      # Step 5: Build and Run Docker Container with improved path handling
+      # Step 5: Build and Run Docker Container with more advanced path handling
       - name: Build and Run Docker Container
         run: |
-          COMPOSE_FILE="$(pwd)/tmp_checkout/docker/development/docker-compose.yml"
-          echo "Using docker-compose file at: $COMPOSE_FILE"
+          echo "===== FINDING COMPOSE FILE ====="
+          DOCKER_DIR="$(pwd)/tmp_checkout/docker/development"
+          COMPOSE_FILE="${DOCKER_DIR}/docker-compose.yml"
           
-          # Check if file exists
-          if [ ! -f "$COMPOSE_FILE" ]; then
-            echo "ERROR: docker-compose.yml file not found at $COMPOSE_FILE"
-            echo "Directory content:"
-            ls -la "$(pwd)/tmp_checkout/docker/development/" || echo "Directory doesn't exist"
-            exit 1
+          echo "Looking for docker-compose file at: $COMPOSE_FILE"
+          if [ -f "$COMPOSE_FILE" ]; then
+            echo "FOUND: docker-compose.yml at $COMPOSE_FILE"
+          else
+            echo "ERROR: docker-compose.yml NOT FOUND at $COMPOSE_FILE"
+            echo "Attempting to find any docker-compose.yml file:"
+            find "$(pwd)" -name "docker-compose.yml" -type f
           fi
           
-          # Build and start container using absolute path
-          echo "Building Docker container..."
-          docker compose -f "$COMPOSE_FILE" build --no-cache
+          echo "===== COPYING COMPOSE FILE (FALLBACK) ====="
+          if [ ! -f "$COMPOSE_FILE" ] && [ -d "$DOCKER_DIR" ]; then
+            echo "Attempting to create docker-compose.yml from local content..."
+            cat > "$COMPOSE_FILE" << 'EOL'
+services:
+  # Define a service called 'nerd-studio'
+  nerd-studio:
+    # Build the image from a Dockerfile
+    build:
+      context: .
+      dockerfile: docker/${DOCKER_ENV:-development}/Dockerfile
+      args:
+        - NODE_ENV=${NODE_ENV:-development}
+    image: nerd-studio-${NODE_ENV:-development}
+    container_name: nerd-studio-${NODE_ENV:-development}
+    ports:
+      - "${PORT:-3000}:3000"
+    env_file:
+      - ${ENV_FILE:-.env}
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - nerd-studio-network
+networks:
+  nerd-studio-network:
+    driver: bridge
+EOL
+            echo "Created docker-compose.yml file manually as fallback"
+            ls -la "$DOCKER_DIR"
+          fi
           
-          echo "Starting Docker container..."
-          docker compose -f "$COMPOSE_FILE" up -d
+          echo "===== RUNNING DOCKER COMMANDS ====="
+          # Try with different path formats in case there's an issue
+          echo "Attempt 1: Using absolute path..."
+          docker compose -f "$COMPOSE_FILE" build --no-cache || true
+          
+          echo "Attempt 2: Using relative path..."
+          cd "$(pwd)/tmp_checkout/docker/development"
+          docker compose build --no-cache
+          
+          echo "Starting container..."
+          docker compose up -d
 
