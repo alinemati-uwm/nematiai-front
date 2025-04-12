@@ -5,7 +5,7 @@ services:
   
     # Build the image from a Dockerfile
     build:
-      context: ../../  # The build context (current directory)
+      context: .  # The build context (current directory)
       dockerfile: docker/${DOCKER_ENV:-development}/Dockerfile  # Select Dockerfile based on env var DOCKER_ENV (default: development)
       args:
         - NODE_ENV=${NODE_ENV:-development}  # Pass build ARG to Dockerfile (environment for Node.js)
