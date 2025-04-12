@@ -97,9 +97,10 @@ jobs:
 
       - name: Build and Run Docker Container
         run: |
-            cd tmp_checkout
-            docker compose -f docker/development/docker-compose.yml build --progress=plain --no-cache
-            docker compose -f docker/development/docker-compose.yml up -d
+            run: |
+              docker compose -f tmp_checkout/docker/development/docker-compose.yml build --progress=plain --no-cache
+              docker compose -f tmp_checkout/docker/development/docker-compose.yml up -d
+          
         
 
         
