@@ -20,3 +20,16 @@ build
 *.log
 *.cache
 *.tmp
+node_modules
+.git
+.gitignore
+Dockerfile
+docker-compose.yml
+.env.local
+.env.development
+dist
+build
+.vscode
+*.log
+*.cache
+*.tmp
